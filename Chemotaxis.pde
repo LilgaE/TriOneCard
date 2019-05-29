@@ -1,95 +1,129 @@
  int red;
 int green;
-int blue;
-int speed=1;
-ball [] amount;
-int checkX = 20,checkY = 20,count,count2=1;
+int blue = (int)Math.random()*255;
+int speed=10;
+int x=1;
+int size=5;
+Others [] amount;
 
 void setup() {
-  size(500,500); 
-   noStroke();
-   smooth();
-   frameRate(60);
-   amount= new ball[10];
-    for(int i=0;i<amount.length;i++)
-    amount[i]= new ball();
+  size(500, 500);
+  noStroke();
+  smooth();
+  cursor(WAIT);
+  frameRate(60);
+  amount= new Others[500];
+  for (int i=0; i<amount.length; i++) {
+    amount[i]= new snow();
+    if (i>=400) {
+      amount[i]= new Stack();
+    }
   }
-
-void draw (){
-  background(0,0,0);
-  red=round((random(0,255)));
-  green=round((random(0,255)));
-  blue=round((random(0,255)));
-  fill(red,green,blue);
-  ellipse (mouseX,mouseY,25,25);
-  noCursor();
-  strokeWeight(50);
-  textSize(30);
-  fill(green,red,blue);
-  
-    for (int h=0; h<amount.length-(count*1);h++)
-    {
-     amount[h].moveballs();
-     amount[h].drawball();
-     amount[h].Check();
-    }
-    if (count>=10){
-     textSize(60);
-     text("YOU WIN",100,200);
-    }
 }
 
-  
-class ball
+void draw () {
+  background(0);
+  fill(122, 122, 122);
+  for (int h=0; h<amount.length; h++)
+  {
+    amount[h].movesnow();
+    amount[h].drawsnow();
+  }
+
+  //--------------------------------------------------------- TREE
+  fill(153, 76, 0);
+  rect(400, 440, 30, 60);
+  fill(0, 112, 0);
+  triangle(350, 450, 410, 200, 475, 450);
+  //---------------------------------------------------------- LIGHTS 
+  fill((float)Math.random()*255, (float)Math.random()*255, (float)Math.random()*255);
+  ellipse(350, 450, 10, 10);
+  ellipse(365, 425, 10, 10);
+  ellipse(390, 390, 10, 10);
+  ellipse(415, 300, 10, 10);
+  ellipse(400, 430, 10, 10);
+  ellipse(420, 350, 10, 10);
+  ellipse(475, 450, 10, 10);
+  ellipse(430, 370, 10, 10);
+  ellipse(460, 400, 10, 10);
+  ellipse(450, 420, 10, 10);
+  ellipse(415, 250, 10, 10);
+  ellipse(390, 320, 10, 10);
+
+  //--------------------------------------------------- STAR
+  fill(255, 255, blue);
+  pushMatrix();
+  translate(410, 210);
+  rotate(frameCount*100);
+  star(0, 0, 10, 100, 100); 
+  popMatrix();
+  //-------------------------------------------------HOUSE
+  fill(255,105,180);
+  rect(0, 350, 150, 400);
+  fill(139, 79, 29);
+  triangle(55, 250, 200, 380, -80, 380);
+  fill(255,255,blue);
+  rect(80, 400, 30, 30);  
+  fill(139,79, 29);
+  rect(35,450,30,100);
+  //-------------------------------------------------TEXT
+  fill((float)Math.random()*255, (float)Math.random()*255, (float)Math.random()*255);
+  textSize(64);
+  text("HAPPY",100,100);
+  text("HOLLIDAYS",150,150);
+}
+interface Others {
+  void movesnow();
+  void drawsnow();
+}
+
+class snow implements Others
 {
-  int startX;
-  int startY; 
-  
-    ball(){
-      startX=(int)(Math.random()*500);
-      startY=(int)(Math.random()*500);
-      
+  double startX;
+  double startY;
+  int size;
+
+  snow() {
+    startX=Math.random()*500;
+    startY=Math.random()*1000-1500;
+    size = 5;
+  }
+  void movesnow() {
+    if (Math.random()*10>=5) {
+      startX= startX+1;
+    } else {
+      startX= startX-1;
     }
-    void moveballs()
-    {
-      if(startX!=mouseX||startY!=mouseY){  
-      ellipse (startX,startY,10,10);
-      if (startX>=mouseX)
-      startX = startX-(int)(Math.random()*10)+speed;
-      else if (startX<=mouseX)
-      startX = startX+(int)(Math.random()*10)-speed;
-      if (startY>=mouseY)
-      startY = startY-(int)(Math.random()*10)+speed;
-      else if (startY<=mouseY)
-      startY = startY+(int)(Math.random()*10)-speed;
-      }
-}
-  void drawball(){
-    ellipse (startX,startY,5,5);
-    text("Score: "+count,175,30);
-    ellipse (checkX,checkY,5,5);
-  }  
-  void Check(){
-    if (startX==checkX && startY==checkY){
-      NewCheck();
+    startY= startY+1;
+
+    if (startY>=500) {
+      startY=Math.random()*1000-1500;
     }
   }
+  void drawsnow() {
+    ellipse ((float)startX, (float)startY, size, size);
+  }
+} 
+class Stack extends snow {
+  
 }
-
-  void NewCheck(){
-    
-    checkX=(int)(Math.random()*500);
-    checkY=(int)(Math.random()*500);
-    count++;
-    
-}
-
 
 void mousePressed() {
-  if (mouseButton == LEFT) {
-    NewCheck();
-  }
 }
 void mouseWheel(MouseEvent event) {
-  speed+=event.getCount();
+  size+=event.getCount();
+}
+void star(float x, float y, float radius1, float radius2, int npoints) {
+  float angle = TWO_PI / npoints;
+  float halfAngle = angle/2.0;
+  beginShape();
+  for (float a = 0; a < TWO_PI; a += angle) {
+    float sx = x + cos(a) * radius2;
+    float sy = y + sin(a) * radius2;
+    vertex(sx, sy);
+    sx = x + cos(a+halfAngle) * radius1;
+    sy = y + sin(a+halfAngle) * radius1;
+    vertex(sx, sy);
+  }
+  endShape(CLOSE);
 }
